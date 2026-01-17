@@ -8,12 +8,6 @@ async def before(page:ft.Page):
 
 async def main(page:ft.Page):
     page.window.always_on_top = True
-   
-    test = await ft.SharedPreferences().get("is_authenticated")
-    if test == "True":
-         asyncio.create_task(
-                page.push_route("/dashboard")
-            )
 
     async def route_change():
         page.views.clear()
