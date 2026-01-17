@@ -139,10 +139,13 @@ Recommended project structure:
 my_flet_app/
 │
 ├── src/
+|   └── assets
+|   └── pages
+|   └── shortcuts
 │   └── main.py
 │
 ├── venv/
-└── requirements.txt
+└── pyproject.toml
 ```
 
 ### Example `main.py`
@@ -154,7 +157,7 @@ def main(page: ft.Page):
     page.title = "My First Flet App"
     page.add(ft.Text("Hello, Flet!"))
 
-ft.app(target=main)
+ft.run(main)
 ```
 
 ---
