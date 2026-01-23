@@ -1,98 +1,41 @@
 import flet as ft
 from shortcuts.helper import THEME_COLOR
-import asyncio
+import datetime
 
 class LoginPage(ft.View):
     def __init__(self,page):
         super().__init__()
 
-        self.username = ft.TextField(
-            hint_text="Username",
-            border_color=THEME_COLOR,
-            border_radius=20,
-            bgcolor="white",
-            color=THEME_COLOR,
-            cursor_color=THEME_COLOR
-        )
+        self.today = datetime.datetime.now()
 
-        self.password = ft.TextField(
-            hint_text="Password",
-            border_color=THEME_COLOR,
-            border_radius=20,
-            can_reveal_password=True,
-            password=True,
-            bgcolor="white",
-            color=THEME_COLOR,
-            cursor_color=THEME_COLOR
-        )
+        self.text = ft.TextField()
 
-        self.button = ft.Button(
-            content="Login",
-            bgcolor=THEME_COLOR,
-            color="white",
-            width=500,
-            on_click= lambda: asyncio.create_task(
-                 self.LoginMethod()
-            )
+        self.data = ft.DatePicker(
+              first_date=datetime.datetime(year=self.today.year - 1, month=1, day=1),
+              last_date=datetime.datetime(year=self.today.year + 1, month=self.today.month, day=20),
+              on_change=self.handle_change
+              
         )
-
-        self.box = ft.Container(
-            content=ft.Column(
-                [
-                    ft.Text("Login"),
-                    self.username,
-                    self.password,
-                    self.button,
-                    ft.Text("Forgot Password?") 
-                ],
-                horizontal_alignment="center"
-            ),
-            padding=20,
-            gradient=ft.LinearGradient(
-                colors=[THEME_COLOR,"yellow"],
-                 begin = ft. Alignment.CENTER_LEFT,
-                 end  =  ft.Alignment.CENTER_RIGHT,
-                 rotation=2.12
-                
-            ),
-            width=300
-        )
-
+        
         self.controls = [
-             self.box 
+             self.text,
+             ft.CupertinoButton(
+                 content=ft.Text("Select Date",color="white"),
+                 bgcolor=THEME_COLOR,
+                 on_click=lambda e: page.show_dialog(self.data),
+             ) 
         ]
         self.vertical_alignment = "center"
         self.horizontal_alignment = "center"
-        self.bgcolor = ft.Colors.BLACK
+        self.bgcolor = ft.Colors.WHITE
         self.padding = 20
         
     
     def build(self):
         return self.controls
+        
+    def handle_change(self,e: ft.Event[ft.DatePicker]):
+        print(e.control.value.strftime('%m/%d/%Y'))
+        self.text.value = str(e.control.value.strftime('%m/%d/%Y'))
+        self.text.update()
     
-    async def LoginMethod(self):
-        if self.username.value == "" or self.password.value == "":
-            print("Kindly Fill Required Details")
-            self.page.show_dialog(
-                ft.SnackBar(
-                    content=ft.Text("Fill IT")
-                )
-            )
-        
-        elif self.username.value == "admin" or self.password.value == "1234":
-            asyncio.create_task(
-                self.page.push_route("/dashboard")
-            )
-
-            await ft.SharedPreferences().set("is_authenticated","True")
-            # test = await ft.SharedPreferences().get("is_authenticated")
-            # print(test)
-        
-        else:
-            self.page.show_dialog(
-                ft.SnackBar(
-                    content=ft.Text("Kindly Fill Correct Details")
-                )
-            )
-        
-

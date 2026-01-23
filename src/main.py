@@ -13,15 +13,12 @@ async def main(page:ft.Page):
         page.views.clear()
 
         if page.route == "/":
-            view = LoginPage(page=page)
+            view = DashboardPage(page=page)
             page.views.append(view)
         
         elif page.route == "/dashboard":
             view = DashboardPage(page=page)
             page.views.append(view)
-
-        
-
 
         page.update()
 
